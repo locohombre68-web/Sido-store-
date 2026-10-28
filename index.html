@@ -37,7 +37,161 @@ function addCart(id){let p=products.find(x=>x.id===id),item=cart.find(x=>x.id===
 function renderCart(){document.getElementById('cartcount').textContent=cart.reduce((s,p)=>s+p.qty,0);document.getElementById('cartitems').innerHTML=cart.length?cart.map(p=>`<div class="cartrow"><div><strong>${p.emoji} ${p.name}</strong><div class="muted">${p.qty} × ${money(p.price)}</div></div><button onclick="removeCart(${p.id})">حذف</button></div>`).join(''):'<p class="muted" style="margin-top:25px">سلتك فارغة. أضف منتجًا للبدء.</p>';document.getElementById('carttotal').textContent='المجموع: '+money(cart.reduce((s,p)=>s+p.price*p.qty,0))}
 function removeCart(id){cart=cart.filter(p=>p.id!==id);renderCart()}
 function toggleCart(open){document.getElementById('cartpanel').classList.toggle('open',open)}function showCheckout(){if(!cart.length){toast('أضف منتجًا إلى السلة أولًا');return}document.getElementById('checkoutform').classList.add('open')}
-function placeOrder(){let n=document.getElementById('custname').value.trim(),ph=document.getElementById('custphone').value.trim(),city=document.getElementById('custcity').value.trim();if(!n||!ph||!city){document.getElementById('orderresult').textContent='يرجى إدخال الاسم ورقم الهاتف والولاية/البلدية.';return}document.getElementById('orderresult').textContent='تم اختبار نموذج الطلب بنجاح، لكن لم يتم إرسال الطلب فعليًا. عند ربط الموقع بخادم، يمكن حفظ الطلب ومتابعته.';toast('تمت تجربة نموذج الطلب')}
+  
+async function placeOrder() {
+  const btn = document.querySelector(
+    '#checkoutform button.primary'
+  );
+
+  const result = document.getElementById('orderresult');
+
+  const name = document.getElementById('custname').value.trim();
+  const phone = document.getElementById('custphone').value.trim();
+  const city = document.getElementById('custcity').value.trim();
+  const address = document.getElementById('custaddress').value.trim();
+
+  if (!name || !phone || !city) {
+    result.textContent =
+      'يرجى إدخال الاسم ورقم الهاتف والولاية والبلدية.';
+    return;
+  }
+
+  if (!cart.length) {
+    result.textContent = 'السلة فارغة. أضف منتجًا أولًا.';
+    return;
+  }
+
+  const total = cart.reduce(
+    (sum, p) => sum + p.price * p.qty, 0
+  );
+
+  const orderItems = cart.map(p =>
+    `${p.name} — الكمية: ${p.qty} — السعر: ${money(p.price)}`
+  ).join('\n');
+
+  const data = new FormData();
+  data.append('_subject', 'طلب جديد من Sido Store');
+  data.append('اسم الزبون', name);
+  data.append('رقم الهاتف', phone);
+  data.append('الولاية والبلدية', city);
+  data.append('عنوان التوصيل', address || 'لم يحدد');
+  data.append('المنتجات المطلوبة', orderItems);
+  data.append('المجموع', money(total));
+
+  btn.disabled = true;
+  result.textContent = 'جارٍ إرسال الطلب...';
+
+  try {
+    const response = await fetch(
+      'https://formspree.io/f/xvkkrynp',
+      {
+        method: 'POST',
+        body: data,
+        headers: { Accept: 'application/json' }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('تعذر إرسال الطلب');
+    }
+
+    result.textContent =
+      'تم إرسال الطلب بنجاح! سيتواصل معك البائع لتأكيده.';
+    toast('تم إرسال الطلب إلى البائع');
+
+    cart = [];
+    renderCart();
+    document.getElementById('checkoutform').classList.remove('open');
+    document.getElementById('custname').value = '';
+    document.getElementById('custphone').value = '';
+    document.getElementById('custcity').value = '';
+    document.getElementById('custaddress').value = '';
+
+  } catch (error) {
+    result.textContent =
+      'لم نتمكن من إرسال الطلب. تحقق من اتصال الإنترنت وإعداد Formspree ثم حاول مجددًا.';
+  } finally {
+    btn.disabled = false;
+  }
+}
+  
+async function placeOrder() {
+  const btn = document.querySelector(
+    '#checkoutform button.primary'
+  );
+
+  const result = document.getElementById('orderresult');
+
+  const name = document.getElementById('custname').value.trim();
+  const phone = document.getElementById('custphone').value.trim();
+  const city = document.getElementById('custcity').value.trim();
+  const address = document.getElementById('custaddress').value.trim();
+
+  if (!name || !phone || !city) {
+    result.textContent =
+      'يرجى إدخال الاسم ورقم الهاتف والولاية والبلدية.';
+    return;
+  }
+
+  if (!cart.length) {
+    result.textContent = 'السلة فارغة. أضف منتجًا أولًا.';
+    return;
+  }
+
+  const total = cart.reduce(
+    (sum, p) => sum + p.price * p.qty, 0
+  );
+
+  const orderItems = cart.map(p =>
+    `${p.name} — الكمية: ${p.qty} — السعر: ${money(p.price)}`
+  ).join('\n');
+
+  const data = new FormData();
+  data.append('_subject', 'طلب جديد من Sido Store');
+  data.append('اسم الزبون', name);
+  data.append('رقم الهاتف', phone);
+  data.append('الولاية والبلدية', city);
+  data.append('عنوان التوصيل', address || 'لم يحدد');
+  data.append('المنتجات المطلوبة', orderItems);
+  data.append('المجموع', money(total));
+
+  btn.disabled = true;
+  result.textContent = 'جارٍ إرسال الطلب...';
+
+  try {
+    const response = await fetch(
+      'https://formspree.io/f/xvkkrynp',
+      {
+        method: 'POST',
+        body: data,
+        headers: { Accept: 'application/json' }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('تعذر إرسال الطلب');
+    }
+
+    result.textContent =
+      'تم إرسال الطلب بنجاح! سيتواصل معك البائع لتأكيده.';
+    toast('تم إرسال الطلب إلى البائع');
+
+    cart = [];
+    renderCart();
+    document.getElementById('checkoutform').classList.remove('open');
+    document.getElementById('custname').value = '';
+    document.getElementById('custphone').value = '';
+    document.getElementById('custcity').value = '';
+    document.getElementById('custaddress').value = '';
+
+  } catch (error) {
+    result.textContent =
+      'لم نتمكن من إرسال الطلب. تحقق من اتصال الإنترنت وإعداد Formspree ثم حاول مجددًا.';
+  } finally {
+    btn.disabled = false;
+  }
+}
+  
 function toast(t){let el=document.getElementById('toast');el.textContent=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2600)}
 function toggleChat(force){let el=document.getElementById('chatbox');if(force===true)el.classList.add('open');else if(force===false)el.classList.remove('open');else el.classList.toggle('open');if(el.classList.contains('open'))setTimeout(()=>document.getElementById('chatinput').focus(),100)}
 function sendChat(){let input=document.getElementById('chatinput'),q=input.value.trim();if(!q)return;appendMsg(q,true);input.value='';let low=q.toLowerCase(),ans='يمكنني مساعدتك في اختيار منتج. أخبرني هل تبحث عن سماعات أو ساعة ذكية أو شاحن؟';if(/سعر|أسعار|ثمن|بكم/.test(q)){ans='هذه أسعار العرض التجريبي: سماعات لاسلكية 4,500 دج، ساعة ذكية 6,800 دج، شاحن سريع 2,200 دج. الأسعار توضيحية وتحتاج إلى تأكيد قبل النشر.'}else if(/سماعة|سماعات|صوت/.test(q)){ans='للاستخدام اليومي جرّب السماعات اللاسلكية (4,500 دج)، وللألعاب سماعة الرأس (5,900 دج). هذه أسعار تجريبية وليست عروضًا مؤكدة.'}else if(/ساعة|ذكي/.test(q)){ans='الساعة الذكية المعروضة في النموذج بسعر تجريبي 6,800 دج. قبل الشراء الفعلي تأكد من الماركة والتوافق والضمان.'}else if(/شاحن|بطارية|باور/.test(q)){ans='الشاحن السريع بسعر تجريبي 2,200 دج، والباور بانك 3,600 دج. تحقق من السعة والقدرة والتوافق قبل اعتماد المنتجات.'}else if(/طلب|توصيل|ولاية|الجزائر/.test(q)){ans='في النسخة النهائية يمكننا تسجيل الولاية والعنوان، ثم تأكيد الطلب مع الزبون وإسناد رقم تتبع. هذا النموذج لا يرسل الطلبات فعليًا.'}else if(/مرحبا|سلام|السلام/.test(q)){ans='أهلًا وسهلًا بك في sido store! 👋 كيف أقدر أساعدك في اختيار الإلكترونيات؟'}else if(/اقترح|أنصح|اختار|اختيار/.test(q)){ans='إذا أردت منتجًا يوميًا فالشاحن السريع خيار اقتصادي (2,200 دج)، وللاستماع جرّب السماعات (4,500 دج). أخبرني بميزانيتك واستعمالك لأقترح الأنسب.'}setTimeout(()=>appendMsg(ans,false),300)}

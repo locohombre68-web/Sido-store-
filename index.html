@@ -22,13 +22,13 @@
 <div class="cartpanel" id="cartpanel"><button onclick="toggleCart(false)" style="float:left;background:transparent;font-size:22px;color:inherit">✕</button><h2>سلة التسوق</h2><div class="muted">راجع المنتجات قبل إرسال الطلب</div><div id="cartitems"></div><h3 id="carttotal">المجموع: 0 دج</h3><button class="primary checkout" onclick="showCheckout()">إكمال الطلب</button><div class="checkoutform" id="checkoutform"><h3>بيانات التوصيل</h3><label>الاسم الكامل</label><input id="custname" placeholder="اسمك الكامل"><label>رقم الهاتف</label><input id="custphone" inputmode="tel" placeholder="05 / 06 / 07 ..."><label>الولاية والبلدية</label><input id="custcity" placeholder="مثال: وهران، السانية"><label>العنوان (اختياري)</label><textarea id="custaddress" rows="2" placeholder="عنوان التوصيل"></textarea><button class="primary checkout" onclick="placeOrder()">تجربة إرسال الطلب</button><p class="muted" id="orderresult"></p></div><p class="muted" style="margin-top:20px">تنبيه: الطلب هنا تجريبي، لا يُرسل إلى متجر حقيقي.</p></div><div class="toast" id="toast"></div>
 <script>
 const products=[
-{id:1,name:'سماعات لاسلكية',cat:'الصوتيات',price:4500,emoji:'🎧',tag:'الأكثر طلبًا',desc:'للاستماع اليومي والمكالمات.'},
-{id:2,name:'ساعة ذكية',cat:'الساعات الذكية',price:6800,emoji:'⌚',tag:'اختيار مميز',desc:'تابع نشاطك وإشعاراتك.'},
-{id:3,name:'مكبر صوت محمول',cat:'الصوتيات',price:5200,emoji:'🔊',tag:'عملي',desc:'صوت محمول للبيت والخروج.'},
+{id:1,name:'سماعات لاسلكية',cat:'الصوتيات',price:2200,emoji:'🎧',tag:'الأكثر طلبًا',desc:'للاستماع اليومي والمكالمات.'},
+{id:2,name:'ساعة ذكية',cat:'الساعات الذكية',price:3800,emoji:'⌚',tag:'اختيار مميز',desc:'تابع نشاطك وإشعاراتك.'},
+{id:3,name:'مكبر صوت محمول',cat:'الصوتيات',price:2200,emoji:'🔊',tag:'عملي',desc:'صوت محمول للبيت والخروج.'},
 {id:4,name:'شاحن سريع USB-C',cat:'الشواحن والكابلات',price:2200,emoji:'🔌',tag:'أساسي',desc:'شاحن يومي صغير وسهل الحمل.'},
-{id:5,name:'يد تحكم للألعاب',cat:'إكسسوارات الألعاب',price:3900,emoji:'🎮',tag:'للألعاب',desc:'تحكم مريح لجلسات اللعب.'},
-{id:6,name:'سماعة رأس للألعاب',cat:'الصوتيات',price:5900,emoji:'🎙️',tag:'لللاعبين',desc:'تواصل وصوت أوضح أثناء اللعب.'},
-{id:7,name:'باور بانك',cat:'الشواحن والكابلات',price:3600,emoji:'🔋',tag:'للتنقل',desc:'طاقة إضافية أثناء التنقل.'},
+{id:5,name:'يد تحكم للألعاب',cat:'إكسسوارات الألعاب',price:2000,emoji:'🎮',tag:'للألعاب',desc:'تحكم مريح لجلسات اللعب.'},
+{id:6,name:'سماعة رأس للألعاب',cat:'الصوتيات',price:1900,emoji:'🎙️',tag:'لللاعبين',desc:'تواصل وصوت أوضح أثناء اللعب.'},
+{id:7,name:'باور بانك',cat:'الشواحن والكابلات',price:4600,emoji:'🔋',tag:'للتنقل',desc:'طاقة إضافية أثناء التنقل.'},
 {id:8,name:'حامل هاتف مكتبي',cat:'إكسسوارات',price:1200,emoji:'📱',tag:'سعر اقتصادي',desc:'لمشاهدة الفيديو وإجراء المكالمات.'}
 ];let cart=[];
 function money(n){return n.toLocaleString('fr-FR')+' دج'}

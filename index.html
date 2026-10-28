@@ -196,4 +196,11 @@ function toast(t){let el=document.getElementById('toast');el.textContent=t;el.cl
 function toggleChat(force){let el=document.getElementById('chatbox');if(force===true)el.classList.add('open');else if(force===false)el.classList.remove('open');else el.classList.toggle('open');if(el.classList.contains('open'))setTimeout(()=>document.getElementById('chatinput').focus(),100)}
 function sendChat(){let input=document.getElementById('chatinput'),q=input.value.trim();if(!q)return;appendMsg(q,true);input.value='';let low=q.toLowerCase(),ans='يمكنني مساعدتك في اختيار منتج. أخبرني هل تبحث عن سماعات أو ساعة ذكية أو شاحن؟';if(/سعر|أسعار|ثمن|بكم/.test(q)){ans='هذه أسعار العرض التجريبي: سماعات لاسلكية 4,500 دج، ساعة ذكية 6,800 دج، شاحن سريع 2,200 دج. الأسعار توضيحية وتحتاج إلى تأكيد قبل النشر.'}else if(/سماعة|سماعات|صوت/.test(q)){ans='للاستخدام اليومي جرّب السماعات اللاسلكية (4,500 دج)، وللألعاب سماعة الرأس (5,900 دج). هذه أسعار تجريبية وليست عروضًا مؤكدة.'}else if(/ساعة|ذكي/.test(q)){ans='الساعة الذكية المعروضة في النموذج بسعر تجريبي 6,800 دج. قبل الشراء الفعلي تأكد من الماركة والتوافق والضمان.'}else if(/شاحن|بطارية|باور/.test(q)){ans='الشاحن السريع بسعر تجريبي 2,200 دج، والباور بانك 3,600 دج. تحقق من السعة والقدرة والتوافق قبل اعتماد المنتجات.'}else if(/طلب|توصيل|ولاية|الجزائر/.test(q)){ans='في النسخة النهائية يمكننا تسجيل الولاية والعنوان، ثم تأكيد الطلب مع الزبون وإسناد رقم تتبع. هذا النموذج لا يرسل الطلبات فعليًا.'}else if(/مرحبا|سلام|السلام/.test(q)){ans='أهلًا وسهلًا بك في sido store! 👋 كيف أقدر أساعدك في اختيار الإلكترونيات؟'}else if(/اقترح|أنصح|اختار|اختيار/.test(q)){ans='إذا أردت منتجًا يوميًا فالشاحن السريع خيار اقتصادي (2,200 دج)، وللاستماع جرّب السماعات (4,500 دج). أخبرني بميزانيتك واستعمالك لأقترح الأنسب.'}setTimeout(()=>appendMsg(ans,false),300)}
 function appendMsg(t,user){let el=document.createElement('div');el.className='msg'+(user?' user':'');el.textContent=t;document.getElementById('chatmessages').appendChild(el);document.getElementById('chatmessages').scrollTop=99999}renderProducts();renderCart();
-</script></body></html>
+</script></body>
+<a href="https://wa.me/213554705760?text=السلام%20عليكم،%20أريد%20الطلب%20من%20متجر%20Sido%20Store"
+   target="_blank"
+   rel="noopener noreferrer"
+   style="position:fixed;bottom:20px;right:20px;background:#25D366;color:white;padding:14px 20px;border-radius:30px;text-decoration:none;font-weight:bold;font-family:Arial,sans-serif;z-index:9999;box-shadow:0 4px 10px rgba(0,0,0,0.2)">
+  اطلب عبر واتساب
+</a>
+</html>
